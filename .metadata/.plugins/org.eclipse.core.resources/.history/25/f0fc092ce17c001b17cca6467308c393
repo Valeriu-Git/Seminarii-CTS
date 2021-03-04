@@ -1,0 +1,20 @@
+package ro.ase.acs.writers;
+
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+
+public class FileWritter extends ConsoleWriter {
+
+	@Override
+	public void displayMessage(String message)
+	{
+		try {
+			FileOutputStream fileOutputStream=new FileOutputStream("output.txt");
+			OutputStreamWriter osWriter=new OutputStreamWriter(fileOutputStream);
+			osWriter.write(message);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+}

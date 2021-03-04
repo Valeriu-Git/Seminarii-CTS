@@ -1,0 +1,2 @@
+INDEX VERSION 1.131+D:\Facultate\Anul 3\Semestrul 2\CTS\Seminarii\.metadata\.plugins\org.eclipse.jdt.core
+2175160046.index

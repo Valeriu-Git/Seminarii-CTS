@@ -1,0 +1,8 @@
+package ro.ase.acs.writers;
+
+public class Writer {
+	private static void displayMessage(String message)
+	{
+		System.out.println(message);
+	}
+}

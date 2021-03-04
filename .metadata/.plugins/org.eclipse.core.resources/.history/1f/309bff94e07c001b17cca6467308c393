@@ -1,0 +1,22 @@
+package ro.ase.acs.main;
+
+import java.util.Scanner;
+
+import ro.ase.acs.readers.Reader;
+import ro.ase.acs.writers.Writer;
+
+public class Main {
+
+
+	
+	public static void main(String[] args)
+	{
+		Reader reader=new Reader();
+		Writer writer= new Writer();
+		writer.displayMessage(reader.read());
+		
+	}
+	
+
+	
+}

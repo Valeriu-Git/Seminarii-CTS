@@ -1,0 +1,13 @@
+package ro.ase.acs.readers;
+
+import java.util.Scanner;
+
+public class Reader {
+	private Scanner scanner= new Scanner(System.in);
+	private  String read() {
+		Scanner scanner= new Scanner(System.in);
+		System.out.println("Message:");
+		String message= scanner.nextLine();
+		return message;
+	}
+}

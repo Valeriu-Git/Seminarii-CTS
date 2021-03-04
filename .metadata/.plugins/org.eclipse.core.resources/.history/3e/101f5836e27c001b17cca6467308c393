@@ -1,0 +1,23 @@
+package ro.ase.acs.main;
+
+import java.util.Scanner;
+
+import ro.ase.acs.readers.Reader;
+import ro.ase.acs.writers.ConsoleWriter;
+import ro.ase.acs.writers.FileWritter;
+
+public class Main {
+
+
+	
+	public static void main(String[] args)
+	{
+		Reader reader=new Reader();
+		ConsoleWriter writer= new FileWritter();
+		writer.displayMessage(reader.read());
+		
+	}
+	
+
+	
+}
