@@ -31,7 +31,6 @@ public class Server implements AutoCloseable {
 		stop();
 		serverSocket = new ServerSocket(port);
 		executorService = Executors.newFixedThreadPool(50 * Runtime.getRuntime().availableProcessors());
-//		final List<Socket> clients = Collections.synchronizedList(new ArrayList<Socket>());
 		
 		Random random= new Random();
 		List<String> userNames=new ArrayList<String>();

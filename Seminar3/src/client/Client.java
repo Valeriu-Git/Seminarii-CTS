@@ -25,7 +25,6 @@ public class Client implements AutoCloseable {
 	
 	public Client(String host, int port,ClientCallback callback) throws UnknownHostException, IOException {
 
-		System.out.println();
 		Client.clients.add(this);
 		socket=new Socket(host,port);
 		new Thread(()->{
@@ -34,7 +33,6 @@ public class Client implements AutoCloseable {
 				try {
 					callback.onTalk(Transport.receive(socket));
 				}catch (Exception e) {
-					// TODO: handle exception
 				}
 			}
 		}).start();
@@ -47,9 +45,7 @@ public class Client implements AutoCloseable {
 	
 	@Override
 	public void close() throws Exception {
-		// TODO Auto-generated method stub
 		socket.close();
 		socket=null;
-		System.out.println("ENDED");
 	}
 }
