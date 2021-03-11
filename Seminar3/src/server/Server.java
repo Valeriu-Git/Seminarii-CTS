@@ -18,7 +18,7 @@ import common.Utils;
 
 public class Server implements AutoCloseable {
 
-	public  static List<ClientServ> test=new ArrayList<ClientServ>();
+	public  static List<ClientServ> clients=new ArrayList<ClientServ>();
 	private ServerSocket serverSocket;
 	private ExecutorService executorService;
 
@@ -31,7 +31,6 @@ public class Server implements AutoCloseable {
 		stop();
 		serverSocket = new ServerSocket(port);
 		executorService = Executors.newFixedThreadPool(50 * Runtime.getRuntime().availableProcessors());
-//		final List<Socket> clients = Collections.synchronizedList(new ArrayList<Socket>());
 		
 		Random random= new Random();
 		List<String> userNames=new ArrayList<String>();
@@ -42,45 +41,17 @@ public class Server implements AutoCloseable {
 					executorService.submit(() -> {
 						try {
 							String[][] airplaneConfiguration=AirplaneConfiguration.airplanesConfigurations[random.nextInt(4)];
-							for(int j=0;j<10;j++)
-							{
-								for(int k=0;k<10;k++)
-								{
-									System.out.printf("%s ",airplaneConfiguration[j][k]);
-								}
-								System.out.println();
-							}
-							System.out.println();
 							ClientServ client=new ClientServ(airplaneConfiguration,socket);
-							test.add(client);
+							clients.add(client);
 							Transport.send("Pentru a castiga trebuie sa nimeresti capetele celor 3 avioane asezate pe o suprafata 10X10.Odata ce un utilizator a castigat progresul este resetat.", socket);
 							Transport.send("Introduceti username-ul", socket);
 							while (socket != null && !socket.isClosed()) {
 								try {
-									ClientServ currentUser=test.stream().filter(cl->cl.socket==socket).findFirst().get();
+									ClientServ currentUser=clients.stream().filter(cl->cl.socket==socket).findFirst().get();
 									String message = Transport.receive(socket);
 									if(currentUser.isChoosingName)
 									{
-										boolean isUsernameTaken=false;
-										for(int i=0;i<userNames.size();i++)
-										{
-											if(message.equals(userNames.get(i)))
-											{
-												isUsernameTaken=true;
-												break;
-											}
-										}
-										if(!isUsernameTaken)
-										{
-										currentUser.userName=message;
-										currentUser.isChoosingName=false;
-										userNames.add(currentUser.userName);
-										Transport.send("Username:"+currentUser.userName, socket);
-										}
-										else
-										{
-											Transport.send("Numele introdus nu este valabil", socket);
-										}
+										allocateNameToClient(message,userNames,currentUser,socket);
 									}
 									else
 									{
@@ -103,38 +74,7 @@ public class Server implements AutoCloseable {
 											currentUser.numberOfAirplanesHit++;
 											if(currentUser.numberOfAirplanesHit==3)
 											{
-												String winnerName=currentUser.userName;
-					
-												for(int i=0;i<test.size();i++)
-												{
-													test.get(i).numberOfAirplanesHit=0;
-													test.get(i).airplaneConfiguration=AirplaneConfiguration.airplanesConfigurations[random.nextInt(4)];
-													System.out.println(test.get(i).userName);
-												for(int j=0;j<10;j++)
-													{
-														for(int k=0;k<10;k++)
-														{
-															System.out.printf("%s ",test.get(i).airplaneConfiguration[j][k]);
-														}
-														System.out.println();
-													}
-													System.out.println();
-													try {
-														if(test.get(i).socket!=socket)
-														{
-														Transport.send(winnerName+" won", test.get(i).socket);
-														}
-														else
-														{
-															Transport.send("You won", test.get(i).socket);
-														}
-													} catch (IOException e) {
-														e.printStackTrace();
-													}finally {
-														Transport.send("Game Reset", test.get(i).socket);
-													}
-													
-												}
+												onUserWinning(currentUser,random,socket);
 											}
 										}
 										else if(Integer.parseInt(chosenSpot)!=0)
@@ -170,7 +110,7 @@ public class Server implements AutoCloseable {
 		});
 	}
 
-	public void stop() throws IOException {
+	private void stop() throws IOException {
 		if (serverSocket != null) {
 			serverSocket.close();
 			serverSocket = null;
@@ -178,6 +118,71 @@ public class Server implements AutoCloseable {
 		if (executorService != null) {
 			executorService.shutdown();
 			executorService = null;
+		}
+	}
+	
+	private void allocateNameToClient(String message, List<String> userNames, ClientServ currentUser,Socket socket) throws IOException
+	{
+		boolean isUsernameTaken=false;
+		for(int i=0;i<userNames.size();i++)
+		{
+			if(message.equals(userNames.get(i)))
+			{
+				isUsernameTaken=true;
+				break;
+			}
+		}
+		if(!isUsernameTaken)
+		{
+		currentUser.userName=message;
+		currentUser.isChoosingName=false;
+		userNames.add(currentUser.userName);
+		Transport.send("Username:"+currentUser.userName, socket);
+		}
+		else
+		{
+			Transport.send("Numele introdus nu este valabil", socket);
+		}
+	}
+	
+	private void onUserWinning(ClientServ currentUser,Random random,Socket socket)
+	{
+		String winnerName=currentUser.userName;
+		
+		for(int i=0;i<clients.size();i++)
+		{
+			clients.get(i).numberOfAirplanesHit=0;
+			clients.get(i).airplaneConfiguration=AirplaneConfiguration.airplanesConfigurations[random.nextInt(4)];
+			System.out.println(clients.get(i).userName);
+		for(int j=0;j<10;j++)
+			{
+				for(int k=0;k<10;k++)
+				{
+					System.out.printf("%s ",clients.get(i).airplaneConfiguration[j][k]);
+				}
+				System.out.println();
+			}
+			System.out.println();
+			try {
+				if(clients.get(i).socket!=socket)
+				{
+				Transport.send(winnerName+" won", clients.get(i).socket);
+				}
+				else
+				{
+					Transport.send("You won", clients.get(i).socket);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					Transport.send("Game Reset", clients.get(i).socket);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 		}
 	}
 }

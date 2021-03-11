@@ -31,19 +31,6 @@ public static  final String[][][] airplanesConfigurations=new String[4][10][10];
 	            airplanesConfigurations[index]=array;
 	            index++;
 			}
-//			System.out.println("Airplanes configuration");
-//			for(int i=0;i<2;i++)
-//			{
-//				for(int j=0;j<10;j++)
-//				{
-//					for(int k=0;k<10;k++)
-//					{
-//						System.out.printf("%s ",airplanesConfigurations[i][j][k]);
-//					}
-//					System.out.println();
-//				}
-//				System.out.println();
-//			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

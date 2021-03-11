@@ -11,4 +11,5 @@ INDEX VERSION 1.131+D:\Facultate\Anul 3\Semestrul 2\CTS\Seminarii\.metadata\.plu
 2268647559.index
 1143136590.index
 3407135505.index
+190792890.index
 3220155492.index
