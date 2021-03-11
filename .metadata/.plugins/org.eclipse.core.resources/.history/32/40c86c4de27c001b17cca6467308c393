@@ -1,8 +1,0 @@
-package ro.ase.acs.writers;
-
-public class ConsoleWriter {
-	public  void print(String message)
-	{
-		System.out.println(message);
-	}
-}
